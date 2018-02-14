@@ -9,3 +9,8 @@ All networks should be available on the robosub server (robosub.eecs.wsu.edu)
 == Requirements ==
 The current implementation relies on TensorFlow 1.5 - this can be installed
 through Pip.
+
+Please update submodules to properly pull down the TensorFlow Models
+repository. This repository contains the object detection API that is used by
+the scripts in this repository. You will need to update your python path to
+include `[repo_base]/models/research` and `[repo_base]/models/research/slim`.
