@@ -5,7 +5,7 @@
     <arg name="model" default="ssd_inception" />
 
     <node pkg="robosub_object_detection" type="tf_vision_node.py" name="tensorflow_network" required="true">
-        <param name="labels" value="$(find robosub_object_detection)/trained_models/$(arg model)/labelmap.pbtxt" />
+        <param name="labels" value="$(find robosub_object_detection)/trained_models/$(arg model)/label_map.pbtxt" />
         <param name="model" value="$(find robosub_object_detection)/trained_models/$(arg model)/frozen_inference_graph.pb" />
     </node>
 
