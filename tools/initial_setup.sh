@@ -2,7 +2,7 @@
 
 script_directory="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-repo_base=`basename $script_directory`
+repo_base=`dirname $script_directory`
 cd $repo_base
 git submodule init
 git submodule update
