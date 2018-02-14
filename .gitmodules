@@ -2,3 +2,4 @@
 	path = models
 	url = https://github.com/tensorflow/models.git
 	branch = r1.5
+    ignore = dirty
