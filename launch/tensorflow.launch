@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Specifies the tensorflow model to use. -->
+    <arg name="model" default="ssd_inception" />
+
+    <node pkg="rs_tensorflow" type="tf_vision_node.py" name="tensorflow_network" required="true"/>
+        <rosparam name="labels" value="$(find rs_tensorflow)/trained_models/$(arg model)/labelmap.pbtxt" />
+        <rosparam name="model" value="$(find rs_tensorflow)/trained_models/$(arg model)/frozen_inference_graph.pb" />
+    </node>
+
+    <node pkg="rs_tensorflow" type="detection_republisher.py" name="left_vision" required="true">
+        <rosparam name="camera" value="left" />
+    </node>
+
+    <node pkg="rs_tensorflow" type="detection_republisher.py" name="right_vision" required="true">
+        <rosparam name="camera" value="right" />
+    </node>
+</launch>
