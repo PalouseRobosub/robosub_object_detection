@@ -4,16 +4,16 @@
     <!-- Specifies the tensorflow model to use. -->
     <arg name="model" default="ssd_inception" />
 
-    <node pkg="robosub_object_detection" type="tf_vision_node.py" name="tensorflow_network" required="true"/>
-        <rosparam name="labels" value="$(find robosub_object_detection)/trained_models/$(arg model)/labelmap.pbtxt" />
-        <rosparam name="model" value="$(find robosub_object_detection)/trained_models/$(arg model)/frozen_inference_graph.pb" />
+    <node pkg="robosub_object_detection" type="tf_vision_node.py" name="tensorflow_network" required="true">
+        <param name="labels" value="$(find robosub_object_detection)/trained_models/$(arg model)/labelmap.pbtxt" />
+        <param name="model" value="$(find robosub_object_detection)/trained_models/$(arg model)/frozen_inference_graph.pb" />
     </node>
 
     <node pkg="robosub_object_detection" type="detection_republisher.py" name="left_vision" required="true">
-        <rosparam name="camera" value="left" />
+        <param name="camera" value="left" />
     </node>
 
     <node pkg="robosub_object_detection" type="detection_republisher.py" name="right_vision" required="true">
-        <rosparam name="camera" value="right" />
+        <param name="camera" value="right" />
     </node>
 </launch>
