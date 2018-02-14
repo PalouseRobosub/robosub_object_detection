@@ -4,6 +4,11 @@ import rospy
 import tensorflow as tf
 import numpy as np
 
+# Specify the Matplotlib rendering agent to use image backends instead of the
+# Xserver for remote operation.
+import matplotlib
+matplotlib.use('Agg')
+
 from object_detection.utils import visualization_utils as vis_util
 from robosub_msgs.msg import DetectionImage, DetectionArray
 from sensor_msgs.msg import Image
