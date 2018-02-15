@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import cv2
 import cv_bridge
-import mutex
+import threading
 import numpy as np
 import rospy
 import tensorflow as tf
@@ -20,7 +20,7 @@ class Node:
         self.graph = graph
         self.session = tf.Session(graph=self.graph)
 
-        self.locker = mutex.mutex()
+        self.mutex = threading.Lock()
         self.left_sub = rospy.Subscriber('camera/left/undistorted', Image, self.left_callback)
         self.left_pub = rospy.Publisher('vision/left/intermediate', DetectionImage, queue_size=10)
 
@@ -40,18 +40,18 @@ class Node:
 
 
     def right_callback(self, img_msg):
-        self.locker.lock(self.callback, (img_msg, self.right_pub))
-        self.locker.unlock()
+        self.mutex.acquire(True)
+        self.callback(img_msg, self.right_pub)
+        self.mutex.release()
 
 
     def left_callback(self, img_msg):
-        self.locker.lock(self.callback, (img_msg, self.left_pub))
-        self.locker.unlock()
+        self.mutex.acquire(True)
+        self.callback(img_msg, self.left_pub)
+        self.mutex.release()
 
 
-    def callback(self, args):
-        img_msg = args[0]
-        publisher = args[1]
+    def callback(self, img_msg, publisher):
         callback_start = rospy.get_time()
         img = self.bridge.imgmsg_to_cv2(img_msg, 'bgr8')
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
