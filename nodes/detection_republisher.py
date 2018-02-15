@@ -129,7 +129,7 @@ class Node:
         output_detections.detections = [det_img_msg.detections[i] for i in kept_indices]
 
         self.pub.publish(output_detections)
-        self.pretty_pub.publish(self.bridge.cv2_to_imgmsg(img))
+        self.pretty_pub.publish(self.bridge.cv2_to_imgmsg(img, encoding='bgr8'))
         t_end = rospy.get_time()
         rospy.loginfo('Callback took {}'.format(t_end - t))
 
