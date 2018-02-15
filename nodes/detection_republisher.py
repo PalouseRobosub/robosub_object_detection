@@ -119,7 +119,6 @@ class Node:
                     classes,
                     scores,
                     label_map,
-                    use_normalized_coordinates=True,
                     min_score_thresh=0,
                     line_thickness=3)
 
