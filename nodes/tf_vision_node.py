@@ -3,6 +3,7 @@ import cv2
 import cv_bridge
 import threading
 import numpy as np
+import os
 import rospy
 import tensorflow as tf
 
@@ -14,18 +15,30 @@ from object_detection.utils import label_map_util
 
 
 class Node:
-    def __init__(self, label_map, graph):
+    def __init__(self, label_map, graph, device, memory):
         # Generate the session associated with the current graph.
         self.labels = label_map
         self.graph = graph
-        self.session = tf.Session(graph=self.graph)
+
+        # For GPU devices, specify the maximum memory fraction. This ensures
+        # that the Jetson has memory for executing the Linux kernel and the
+        # vision network in parallel.
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=memory)
+        config = tf.ConfigProto(gpu_options=gpu_options)
+
+        with tf.device(device):
+            self.session = tf.Session(graph=self.graph, config=config)
 
         self.mutex = threading.Lock()
-        self.left_sub = rospy.Subscriber('camera/left/undistorted', Image, self.left_callback)
-        self.left_pub = rospy.Publisher('vision/left/intermediate', DetectionImage, queue_size=10)
+        self.left_sub = rospy.Subscriber('camera/left/undistorted', Image,
+                self.left_callback)
+        self.left_pub = rospy.Publisher('vision/left/intermediate',
+                DetectionImage, queue_size=10)
 
-        self.right_sub = rospy.Subscriber('camera/right/undistorted', Image, self.right_callback)
-        self.right_pub = rospy.Publisher('vision/right/intermediate', DetectionImage, queue_size=10)
+        self.right_sub = rospy.Subscriber('camera/right/undistorted', Image,
+                self.right_callback)
+        self.right_pub = rospy.Publisher('vision/right/intermediate',
+                DetectionImage, queue_size=10)
 
         self.bridge = cv_bridge.CvBridge()
         self.min_score = 0.10
@@ -65,7 +78,8 @@ class Node:
                         self.image_tensor: np.expand_dims(img_rgb, axis=0)
                     })
 
-            rospy.loginfo(' === Inference took {} seconds === '.format(rospy.get_time() - start_t))
+            rospy.loginfo(' === Inference took {} seconds === '.format(
+                        rospy.get_time() - start_t))
 
         # Process the array outputs from the inference into normal lists and
         # numbers.
@@ -113,6 +127,16 @@ if __name__ == '__main__':
 
     label_file = rospy.get_param('~labels')
     model_file = rospy.get_param('~model')
+    memory = rospy.get_param('~memory')
+
+    cpu_only  = rospy.get_param('~cpu', default=False)
+
+    device = '/gpu:0'
+    if cpu_only:
+        rospy.loginfo('Removing visible CUDA devices. Forcing CPU execution.')
+        device = '/cpu:0'
+        os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 
     rospy.loginfo('=== Parameters loaded ===')
 
@@ -137,7 +161,7 @@ if __name__ == '__main__':
     rospy.loginfo('=== Graph created ===')
 
     # Construct the node and begin the pub/sub loops.
-    node = Node(category_index, detection_graph)
+    node = Node(category_index, detection_graph, device, memory)
 
     rospy.spin()
 

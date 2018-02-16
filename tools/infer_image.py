@@ -1,4 +1,9 @@
 #!/usr/bin/python
+
+# Prevent matplotlib errors when using remote sessions without an Xsession.
+import matplotlib
+matplotlib.use('Agg')
+
 import argparse
 import cv2
 import cv_bridge

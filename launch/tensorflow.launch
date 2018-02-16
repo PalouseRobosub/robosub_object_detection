@@ -4,9 +4,20 @@
     <!-- Specifies the tensorflow model to use. -->
     <arg name="model" default="ssd_inception" />
 
-    <node pkg="robosub_object_detection" type="tf_vision_node.py" name="tensorflow_network" required="true" output="screen">
+    <!-- Specifies when CPU-only execution should be used. This is useful when
+         CUDA is erroring. -->
+    <arg name="cpu" default="false" />
+
+    <!-- Specifies the fraction of memory that is allotted to the TensorFlow
+         session. If memory is overutilized by the Linux core, graph loading
+         can fail. -->
+    <arg name="memory_fraction" default="0.5" />
+
+    <node pkg="robosub_object_detection" type="tf_vision_node.py" name="tensorflow_network" required="true" output="screen" respawn="true">
         <param name="labels" value="$(find robosub_object_detection)/trained_models/$(arg model)/label_map.pbtxt" />
         <param name="model" value="$(find robosub_object_detection)/trained_models/$(arg model)/frozen_inference_graph.pb" />
+        <param name="cpu" value="$(arg cpu)" />
+        <param name="memory" value="$(arg memory_fraction)" />
     </node>
 
     <node pkg="robosub_object_detection" type="detection_republisher.py" name="left_vision">
