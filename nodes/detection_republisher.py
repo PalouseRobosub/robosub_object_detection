@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import cv2
 import cv_bridge
 import rospy
 import tensorflow as tf
