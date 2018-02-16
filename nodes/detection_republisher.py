@@ -93,10 +93,10 @@ class Node:
         classes = []
         label_map = dict()
         for det in det_img_msg.detections:
-            ymin = int((det.y - det.height / 2) * rows)
-            ymax = int((det.y + det.height / 2) * rows)
-            xmin = int((det.x - det.width / 2) * columns)
-            xmax = int((det.x + det.width / 2) * columns)
+            ymin = (det.y - det.height / 2)
+            ymax = (det.y + det.height / 2)
+            xmin = (det.x - det.width / 2)
+            xmax = (det.x + det.width / 2)
             scores.append(det.probability)
             classes.append(det.label_id)
             label_map[det.label_id] = {'name': det.label}
@@ -112,7 +112,7 @@ class Node:
 
         # Construct the pretty image.
         if len(kept_indices) > 0:
-            print boxes
+            img = cv2.resize(img, (0,0), fx=0.5, fy=0.5)
             vis_util.visualize_boxes_and_labels_on_image_array(
                     img,
                     boxes,
@@ -120,7 +120,9 @@ class Node:
                     scores,
                     label_map,
                     min_score_thresh=0,
+                    use_normalized_coordinates=True,
                     line_thickness=3)
+            img = cv2.resize(img, (0,0), fx=2, fy=2)
 
         # Publish the actual detections in the image
         output_detections = DetectionArray()

@@ -9,11 +9,11 @@
         <param name="model" value="$(find robosub_object_detection)/trained_models/$(arg model)/frozen_inference_graph.pb" />
     </node>
 
-    <node pkg="robosub_object_detection" type="detection_republisher.py" name="left_vision" required="true">
+    <node pkg="robosub_object_detection" type="detection_republisher.py" name="left_vision">
         <param name="camera" value="left" />
     </node>
 
-    <node pkg="robosub_object_detection" type="detection_republisher.py" name="right_vision" required="true">
+    <node pkg="robosub_object_detection" type="detection_republisher.py" name="right_vision">
         <param name="camera" value="right" />
     </node>
 </launch>
