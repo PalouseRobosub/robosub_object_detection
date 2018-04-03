@@ -92,6 +92,8 @@ class Node:
         boxes = []
         scores = []
         classes = []
+        ids = dict()
+        id_index = 0
         label_map = dict()
         for det in det_img_msg.detections:
             ymin = (det.y - det.height / 2)
@@ -99,8 +101,17 @@ class Node:
             xmin = (det.x - det.width / 2)
             xmax = (det.x + det.width / 2)
             scores.append(det.probability)
-            classes.append(det.label_id)
-            label_map[det.label_id] = {'name': det.label}
+
+            try:
+                label_id = ids[det.label]
+            except:
+                ids[det.label] = id_index
+                id_index += 1
+
+                label_id = ids[det.label]
+
+            classes.append(label_id)
+            label_map[label_id] = {'name': det.label}
             boxes.append(np.array([ymin, xmin, ymax, xmax]))
 
         # Remove overlapping detections with non maximum suppression.
