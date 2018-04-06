@@ -2,7 +2,7 @@
 This repository contains the Palouse Robosub-specific ROS nodes for employing deep learning neural nets for vision inferences.
 
 ## To run with specific network run
-Mostly networks are stored at /`repositories/robosub_object_detection/trained_models`. To run specific network, run
+Networks must be stored at /`repositories/robosub_object_detection/trained_models`. To run specific network, run
     `roslaunch robosub_object_detection tensorflow.launch model:={name_of_network}`
 
 ## To pull trained networks
