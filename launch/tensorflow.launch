@@ -13,9 +13,6 @@
          can fail. -->
     <arg name="memory_fraction" default="0.5" />
 
-    <!-- Calls script that sets time same as NUC -->
-    <node name="time_sync" pkg="robosub_object_detection" type="time_sync.sh" />
-
     <node pkg="robosub_object_detection" type="tf_vision_node.py" name="tensorflow_network" required="true" output="screen">
         <param name="labels" value="$(find robosub_object_detection)/trained_models/$(arg model)/label_map.pbtxt" />
         <param name="model" value="$(find robosub_object_detection)/trained_models/$(arg model)/frozen_inference_graph.pb" />
