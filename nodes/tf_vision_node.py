@@ -30,12 +30,12 @@ class Node:
             self.session = tf.Session(graph=self.graph, config=config)
 
         self.mutex = threading.Lock()
-        self.left_sub = rospy.Subscriber('camera/left/undistorted', Image,
+        self.left_sub = rospy.Subscriber('camera/left/image_raw', Image,
                 self.left_callback)
         self.left_pub = rospy.Publisher('vision/left/intermediate',
                 DetectionImage, queue_size=10)
 
-        self.right_sub = rospy.Subscriber('camera/right/undistorted', Image,
+        self.right_sub = rospy.Subscriber('camera/right/image_raw', Image,
                 self.right_callback)
         self.right_pub = rospy.Publisher('vision/right/intermediate',
                 DetectionImage, queue_size=10)
